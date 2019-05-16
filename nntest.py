@@ -20,6 +20,7 @@ def file_len(fname):
 def calculateScore(playermatrix,i,stats):
     scorearray = []
     for stat in stats:
+        stat+=2
         if(stat==3):
             trb = playermatrix[i][3]/1116
             scorearray.append(trb)
@@ -54,7 +55,7 @@ def main():
     playermatrix.pop(0)
 
     for i in range(0,len(playermatrix)):
-        playermatrix[i].append(calculateScore(playermatrix,i,[3,4,5,6,7]))
+        playermatrix[i].append(calculateScore(playermatrix,i,[1,2,3,4,5]))
 
     playermatrix = sortedArray(playermatrix)
     playermatrix = playermatrix[::-1]
