@@ -19,8 +19,8 @@ def calculateScore(stat,statmax):
     score = float(stat)/float(statmax)
     return score
 
-def sortedArray(array):
-    array = sorted(array, key=lambda score: score[-1])
+def sortedArray(array,i):
+    array = sorted(array, key=lambda score: score[i])
     array = array[::-1]
     return array
 
@@ -74,7 +74,7 @@ def main(argv1,argv2):
     t = -1
     T = 0
     #growing phase
-    while t<T or len(Wk) < k:
+    while True:
         trbflag = astflag = stlflag = blkflag = ptsflag = 0
         T_Array = []
         if(trbparser!=None and trbflag == 0):
@@ -173,16 +173,29 @@ def main(argv1,argv2):
             for player in T_Array:
                 T += player[3]
 
-        Wk = sortedArray(playersArray)
+        Wk = sortedArray(playersArray,-1)
         t = Wk[0][-1]
 
-        if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
-            print "end of file"
-            exit(0)
+        # if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
+        #     print "end of file"
+        #     exit(0)
+
         firstparse = 1
+        if(t>=T and len(Wk)>k):
+            print len(Wk)
+            break
+
 
     #shrinking phase
     while(t>=T):
+        print t,T
+        print "TOPK"
+        for i in range(len(playersArray)):
+            # print len(Wk)
+            print Wk[i]
+        exit(0)
+        kappa = 0
+        keepo = 0
         for player in Wk:
             player_upper_bound = 0
             if(len(player[2])==len(statsarray)):
@@ -194,13 +207,29 @@ def main(argv1,argv2):
                         player_upper_bound += tplayer[-1]
                 player_upper_bound+=player[3]
                 if(len(player)==4):
+                    print "keepo"
+                    print player
+                    print len(player)
                     player.append(player_upper_bound)
                 else:
-                    player[5]=player_upper_bound
-                print T_Array
+                    print player
+                    player[4]=player_upper_bound
+                # print T_Array
 
-            # Wk = sortedArray(playersArray)
-        break
+        # for i in range(0,k):
+        #     if(len(Wk[i][2])==len(statsarray)):
+        #         kappa = 1
+        #     elif(len(Wk[i][2])!=len(statsarray)):
+        #         keepo = 1
+
+        for i in range(0,k):
+            if(Wk[i][4]<=t):
+                print "TOP K RESULT"
+                for j in range(0,k):
+                    print len(Wk)
+                    print Wk[j]
+                exit(0)
+
 
 
     print "WK"
