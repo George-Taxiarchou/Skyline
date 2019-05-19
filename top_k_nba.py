@@ -70,11 +70,11 @@ def main(argv1,argv2):
     trbmax = blkmax = astmax = stlmax = ptsmax = 0
     firstparse = 0
     playersArray = []
-    Wk = [None] * k
+    Wk = [None]
     t = -1
     T = 0
-
-    while t<T:
+    #growing phase
+    while t<T or len(Wk) < k:
         trbflag = astflag = stlflag = blkflag = ptsflag = 0
         T_Array = []
         if(trbparser!=None and trbflag == 0):
@@ -173,14 +173,35 @@ def main(argv1,argv2):
             for player in T_Array:
                 T += player[3]
 
-        tempWK = sortedArray(playersArray)
-        Wk = tempWK
+        Wk = sortedArray(playersArray)
         t = Wk[0][-1]
 
         if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
             print "end of file"
             exit(0)
         firstparse = 1
+
+    #shrinking phase
+    while(t>=T):
+        for player in Wk:
+            player_upper_bound = 0
+            if(len(player[2])==len(statsarray)):
+                player_upper_bound = player[-1]
+                player.append(player_upper_bound)
+            else:
+                for tplayer in T_Array:
+                    if(tplayer[2][0] not in player[2]):
+                        player_upper_bound += tplayer[-1]
+                player_upper_bound+=player[3]
+                if(len(player)==4):
+                    player.append(player_upper_bound)
+                else:
+                    player[5]=player_upper_bound
+                print T_Array
+
+            # Wk = sortedArray(playersArray)
+        break
+
 
     print "WK"
     for player in Wk:
