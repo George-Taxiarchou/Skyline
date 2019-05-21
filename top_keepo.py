@@ -299,7 +299,7 @@ def main(argv1,argv2):
         for player in Wk:
             if(len(player[2])==len(statsarray)):
                 seenAll+=1
-        if(seenAll == len(Wk)):
+        if(seenAll >= len(Wk)):
             break
 
         if(len(Wk)==k):
