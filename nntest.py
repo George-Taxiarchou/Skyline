@@ -56,11 +56,11 @@ def main():
 
     for i in range(0,len(playermatrix)):
         playermatrix[i].append(calculateScore(playermatrix,i,[1,4]))
-
+        
     playermatrix = sortedArray(playermatrix)
     playermatrix = playermatrix[::-1]
 
-    for i in range(0,50):
+    for i in range(0,595):
         print playermatrix[i]
 
 if __name__ == "__main__":

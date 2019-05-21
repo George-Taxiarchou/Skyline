@@ -80,6 +80,10 @@ def main(argv1,argv2):
 
     #growing phase
     while True:
+
+        # if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
+        #     print "end of file"
+        #     break
         trbflag = astflag = stlflag = blkflag = ptsflag = 0
 
         T_Array = []
@@ -94,12 +98,12 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
-                print temptoken
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
-                print temptoken
+                # print temptoken
 
             playersArray = appendedPlayersArray(temptoken,playersArray)
             T_Array.append(temptoken)
@@ -114,12 +118,12 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['ast'])
                 temptoken.append(calculateScore(token[0][1],astmax))
-                print temptoken
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['ast'])
                 temptoken.append(calculateScore(token[0][1],astmax))
-                print temptoken
+                # print temptoken
             playersArray.append(temptoken)
             T_Array.append(temptoken)
 
@@ -133,12 +137,12 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['stl'])
                 temptoken.append(calculateScore(token[0][1],stlmax))
-                print temptoken
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['stl'])
                 temptoken.append(calculateScore(token[0][1],stlmax))
-                print temptoken
+                # print temptoken
             playersArray.append(temptoken)
             T_Array.append(temptoken)
 
@@ -152,12 +156,12 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
-                print temptoken
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
-                print temptoken
+                # print temptoken
             playersArray = appendedPlayersArray(temptoken,playersArray)
             T_Array.append(temptoken)
 
@@ -171,12 +175,12 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['pts'])
                 temptoken.append(calculateScore(token[0][1],ptsmax))
-                print temptoken
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['pts'])
                 temptoken.append(calculateScore(token[0][1],ptsmax))
-                print temptoken
+                # print temptoken
             playersArray.append(temptoken)
             T_Array.append(temptoken)
 
@@ -188,9 +192,9 @@ def main(argv1,argv2):
         Wk = sortedArray(playersArray,3)
 
         t = Wk[ min(k,len(Wk))-1 ][3]
-        # if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
-        #     print "end of file"
-        #     exit(0)
+
+        if(len(Wk)==trblen):
+            break
 
         firstparse = 1
 
@@ -218,16 +222,16 @@ def main(argv1,argv2):
             player_upper_bound += player[-1]    # upper bound is lower bound
             player.append(player_upper_bound)  # save upper bound
 
+    if(len(Wk) != trblen):
+        upperboundsarray = sortedArray(Wk,3)
+        for i in range(0,k):
+            upperboundsarray.pop(0)
+        upperboundsarray = sortedArray(upperboundsarray,4)
+        fcub = upperboundsarray[0][-1]
+    else:
+        fcub = -1
 
-    upperboundsarray = sortedArray(Wk,3)
-    for i in range(0,k):
-        upperboundsarray.pop(0)
-    upperboundsarray = sortedArray(upperboundsarray,4)
-    fcub = upperboundsarray[0][-1]
-
-
-    while(t<fcub):
-
+    while(t<fcub and fcub!=-1):
         T_Array = []
         trbflag = blkflag =0
 
@@ -268,14 +272,11 @@ def main(argv1,argv2):
             #playersArray = appendedPlayersArray(temptoken,playersArray)
             T_Array.append(temptoken)
 
-
-        for newPlayer in T_Array:
+        for newplayer in T_Array:
             for player in Wk:
-                if(newPlayer[0][0]==player[0][0]):  #calc new lower bound
-                    player[3] += newPlayer[3]
-                    print "error here"
+                if(newplayer[0][0]==player[0][0]):
+                    player[3]+=newplayer[3]
                     player[2].append(newPlayer[2][0])
-
 
         for newPlayer in T_Array:
             for player in Wk:
@@ -284,12 +285,8 @@ def main(argv1,argv2):
                     player[4] -= prevTarray[idx][3] - newPlayer[3] #calc new upper
 
 
-
-
-
         prevTarray = T_Array
         Wk = sortedArray(Wk,3)
-
         t = Wk[k-1][3] #calc t
 
         upperboundsarray = sortedArray(Wk,3)
@@ -298,10 +295,24 @@ def main(argv1,argv2):
         upperboundsarray = sortedArray(upperboundsarray,4)
         fcub = upperboundsarray[0][-1]
 
+        seenAll = 0
+        for player in Wk:
+            if(len(player[2])==len(statsarray)):
+                seenAll+=1
+        if(seenAll == len(Wk)):
+            break
+
+        if(len(Wk)==k):
+            break
+
+        if(t>=fcub):
+            break
+
 
 
 
     print fcub,t
+    print "###############"
     for i in range(0,k):
         print(Wk[i])
     print temptoken[1]
