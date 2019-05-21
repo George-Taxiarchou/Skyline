@@ -90,14 +90,19 @@ def main(argv1):
                 for object in W:
                     if(dominates(o[i],object)):
                         W.remove(object)
-                    if(flag!=1):
-                        W.append(o[i])
-                        flag = 1
+                if(flag!=1):
+                    W.append(o[i])
+                    flag = 1
         i+=1
-        print len(W)
+
+    for skp in W:
+        for kp in W:
+            if(dominates(skp,kp)):
+                W.remove(kp)
+
     for skylinePlayer in W:
         print skylinePlayer
-    print len(W)
+
 
 
 if __name__ == "__main__":
