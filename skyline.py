@@ -83,9 +83,13 @@ def main(argv1):
             W.append(o[i])
 
         flag = 0
+        domiflag=0
         for object in W:
             if(dominates(object,o[i])):
-                continue
+                for obj in W:
+                    if(obj==o[i]):
+                        W.remove(obj)
+                break
             else:
                 for object in W:
                     if(dominates(o[i],object)):
@@ -95,10 +99,6 @@ def main(argv1):
                     flag = 1
         i+=1
 
-    for skp in W:
-        for kp in W:
-            if(dominates(skp,kp)):
-                W.remove(kp)
 
     for skylinePlayer in W:
         print skylinePlayer
