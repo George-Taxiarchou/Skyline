@@ -81,20 +81,23 @@ def main(argv1):
     while(i<length):
         if(i==0):
             W.append(o[i])
-        flag = 0
 
+        flag = 0
         for object in W:
             if(dominates(object,o[i])):
                 continue
             else:
-                W.remove(object)
-                if(flag!=1):
-                    W.append(o[i])
-                    flag = 1
+                for object in W:
+                    if(dominates(o[i],object)):
+                        W.remove(object)
+                    if(flag!=1):
+                        W.append(o[i])
+                        flag = 1
         i+=1
-
+        print len(W)
     for skylinePlayer in W:
         print skylinePlayer
+    print len(W)
 
 
 if __name__ == "__main__":
