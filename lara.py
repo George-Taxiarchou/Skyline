@@ -106,34 +106,24 @@ def main(argv1,argv2):
         if(trbparser!=None and trbflag == 0):
             trbflag = 1
             token = next(trbparser)
-            if(token[1] == trblen):
-                trbend = 1
-                temptoken = token
-                temptoken.append(['trb'])
-                temptoken.append(calculateScore(token[0][1],trbmax))
-                temptoken[0].pop(-1)
-            else:
-                temptoken = token
-                temptoken.append(['trb'])
-                temptoken.append(calculateScore(token[0][1],trbmax))
-                temptoken[0].pop(-1)
+
+            temptoken = token
+            temptoken.append(['trb'])
+            temptoken.append(calculateScore(token[0][1],trbmax))
+            temptoken[0].pop(-1)
+
             playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(astparser!=None and astflag==0):
             astflag = 1
             token = next(astparser)
-            if(token[1] == astlen):
-                astend = 1
-                temptoken = token
-                temptoken.append(['ast'])
-                temptoken.append(calculateScore(token[0][1],astmax))
-                temptoken[0].pop(-1)
-            else:
-                temptoken = token
-                temptoken.append(['ast'])
-                temptoken.append(calculateScore(token[0][1],astmax))
-                temptoken[0].pop(-1)
+
+            temptoken = token
+            temptoken.append(['ast'])
+            temptoken.append(calculateScore(token[0][1],astmax))
+            temptoken[0].pop(-1)
+
             playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
@@ -141,17 +131,11 @@ def main(argv1,argv2):
             stlflag = 1
             token = next(stlparser)
 
-            if(token[1] == stllen):
-                stlend = 1
-                temptoken = token
-                temptoken.append(['stl'])
-                temptoken.append(calculateScore(token[0][1],stlmax))
-                temptoken[0].pop(-1)
-            else:
-                temptoken = token
-                temptoken.append(['stl'])
-                temptoken.append(calculateScore(token[0][1],stlmax))
-                temptoken[0].pop(-1)
+            temptoken = token
+            temptoken.append(['stl'])
+            temptoken.append(calculateScore(token[0][1],stlmax))
+            temptoken[0].pop(-1)
+
             playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
@@ -159,17 +143,10 @@ def main(argv1,argv2):
             blkflag = 1
             token = next(blkparser)
 
-            if(token[1] == blklen):
-                blkend = 1
-                temptoken = token
-                temptoken.append(['blk'])
-                temptoken.append(calculateScore(token[0][1],blkmax))
-                temptoken[0].pop(-1)
-            else:
-                temptoken = token
-                temptoken.append(['blk'])
-                temptoken.append(calculateScore(token[0][1],blkmax))
-                temptoken[0].pop(-1)
+            temptoken = token
+            temptoken.append(['blk'])
+            temptoken.append(calculateScore(token[0][1],blkmax))
+            temptoken[0].pop(-1)
 
             playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
@@ -177,17 +154,11 @@ def main(argv1,argv2):
         if(ptsparser!=None and ptsflag==0):
             ptsflag = 1
             token = next(ptsparser)
-            if(token[1] == ptslen):
-                ptsend = 1
-                temptoken = token
-                temptoken.append(['pts'])
-                temptoken.append(calculateScore(token[0][1],ptsmax))
-                temptoken[0].pop(-1)
-            else:
-                temptoken = token
-                temptoken.append(['pts'])
-                temptoken.append(calculateScore(token[0][1],ptsmax))
-                temptoken[0].pop(-1)
+
+            temptoken = token
+            temptoken.append(['pts'])
+            temptoken.append(calculateScore(token[0][1],ptsmax))
+            temptoken[0].pop(-1)
 
             playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
@@ -220,35 +191,24 @@ def main(argv1,argv2):
             prevTarray = T_Array
 
         else:
-            if(firsttime==0):
-                for player in playersArray:
-                    player_upper_bound = 0
-                    if( len(player[2])==len(statsarray) ): # if found on every line
-                        player_upper_bound = player[3]    # upper bound is lower bound
+            for player in playersArray:
+                player_upper_bound = 0
+                if( len(player[2])==len(statsarray) ): # if found on every file
+                    player_upper_bound = player[3]    # upper bound is lower bound
+                    if(firsttime==0):
                         player.append(player_upper_bound)  # save upper bound
-                    else:
-                        for newPlayer in T_Array:
-                            if newPlayer[2][0] not in player[2]:
-                                player_upper_bound += newPlayer[3]
-                        player_upper_bound += player[3]    # upper bound is lower bound
+                    elif(firsttime==1):
+                        player[4]=player_upper_bound
+                else:
+                    for newPlayer in T_Array:
+                        if newPlayer[2][0] not in player[2]:
+                            player_upper_bound += newPlayer[3]
+                    player_upper_bound += player[3]    # upper bound is lower bound
+                    if(firsttime==0):
                         player.append(player_upper_bound)  # save upper bound
-                firsttime=1
-
-
-            elif(firsttime==1):
-                for player in playersArray:
-                    player_upper_bound = 0
-                    if(len(player[2])==len(statsarray) ): # if found on every line
-                        player_upper_bound = player[3]    # upper bound is lower bound
-                        player[4]=player_upper_bound  # save upper bound
-                    else:
-                        for newPlayer in T_Array:
-                            if newPlayer[2][0] not in player[2]:
-                                player_upper_bound += newPlayer[3]
-                        player_upper_bound += player[3]    # upper bound is lower bound
-                        player[4]=player_upper_bound # save upper bound
-
-
+                    elif(firsttime==1):
+                        player[4]=player_upper_bound
+            firsttime=1
 
             lowerbounds = sortedArray(playersArray,3)
             upperbounds = sortedArray(playersArray,4)
@@ -277,41 +237,11 @@ def main(argv1,argv2):
                     if(upperbounds!=[]):
                         ub = upperbounds[0][-1]
                         prevub = ub
-                    else:
-                        ub = prevub
-
-
-
-            if(len(W)>=k):
-                print "\t\tTOP-K"
-                print "------------------------------------------"
-                W = sortedArray(W,3)
-                for w in W[0:k]:
-                    print w
-                print "------------------------------------------"
-                print "\t  lines parsed: " + temptoken[1].__str__()
-                exit(0)
-
-            seenAll = 0
-            for player in playersArray:
-                if(len(player[2])==len(statsarray)):
-                    seenAll+=1
-            if(seenAll >= len(playersArray)):
-                print "\t\tTOP-K"
-                print "------------------------------------------"
-                W = sortedArray(W,3)
-                for w in W[0:k]:
-                    print w
-                print "------------------------------------------"
-                print "\t  lines parsed: " + temptoken[1].__str__()
-                exit(0)
 
             t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
-
             #extreme pruning play
 
             prevTarray = T_Array
-
 
 if __name__ == "__main__":
     main(sys.argv[1],sys.argv[2])
