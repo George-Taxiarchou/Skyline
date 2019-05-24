@@ -203,7 +203,18 @@ def main(argv1,argv2):
 
             t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
 
-            if(t>=T):
+            if(len(statsarray)==1):
+                W = lowerbounds
+                if(len(lowerbounds)==k):
+                    print "\t\tTOP-K"
+                    print "------------------------------------------"
+                    for lb in playersArray:
+                        print lb
+                    print "------------------------------------------"
+                    print "\t  lines parsed: " + temptoken[1].__str__()
+                    exit(0)
+
+            if(t>=T and len(statsarray)!=1):
                 growing = False
                 Wk = lowerbounds[0:k]
             prevTarray = T_Array
@@ -247,29 +258,38 @@ def main(argv1,argv2):
             ub = upperbounds[0][-1]
 
             #extreme pruning play
-
+            prevub = ub
             for player in lowerbounds:
                 if(player[3]>=ub):
                     W.append(player)
                     upperbounds.remove(player)
                     upperbounds = sortedArray(upperbounds,4)
                     if(len(W)>=k):
-                        print "-----------------"
-                        print "TOP-K"
+                        print "\t\tTOP-K"
+                        print "------------------------------------------"
+                        W = sortedArray(W,3)
                         for w in W[0:k]:
                             print w
-                        print "lines parsed: " + temptoken[1].__str__()
-                        print "-----------------"
+                        print "------------------------------------------"
+                        print "\t  lines parsed: " + temptoken[1].__str__()
                         exit(0)
-                    ub = upperbounds[0][-1]
+
+                    if(upperbounds!=[]):
+                        ub = upperbounds[0][-1]
+                        prevub = ub
+                    else:
+                        ub = prevub
+
+
 
             if(len(W)>=k):
-                print "-----------------"
-                print "TOP-K"
+                print "\t\tTOP-K"
+                print "------------------------------------------"
+                W = sortedArray(W,3)
                 for w in W[0:k]:
                     print w
-                print "lines parsed: " + temptoken[1].__str__()
-                print "-----------------"
+                print "------------------------------------------"
+                print "\t  lines parsed: " + temptoken[1].__str__()
                 exit(0)
 
             seenAll = 0
@@ -277,14 +297,16 @@ def main(argv1,argv2):
                 if(len(player[2])==len(statsarray)):
                     seenAll+=1
             if(seenAll >= len(playersArray)):
-                print "-----------------"
-                print "TOP-K"
+                print "\t\tTOP-K"
+                print "------------------------------------------"
+                W = sortedArray(W,3)
                 for w in W[0:k]:
                     print w
-                print "lines parsed: " + temptoken[1].__str__()
-                print "-----------------"
+                print "------------------------------------------"
+                print "\t  lines parsed: " + temptoken[1].__str__()
                 exit(0)
-            t = lowerbounds[k-1][3]
+
+            t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
 
             #extreme pruning play
 
