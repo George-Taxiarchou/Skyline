@@ -247,7 +247,7 @@ def main(argv1,argv2):
             ub = upperbounds[0][-1]
 
             #extreme pruning play
-            
+
             for player in lowerbounds:
                 if(player[3]>=ub):
                     W.append(player)
