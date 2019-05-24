@@ -49,6 +49,8 @@ def main(argv1,argv2):
     k = int(argv2)
     trbparser = astparser = stlparser = blkparser = ptsparser= None
     trbmax = blkmax = astmax = stlmax = ptsmax = 0
+    trblen=astlen=blklen=ptslen=stllen = 0
+
     playersArray = []
     for stat in statsarray:
         if(stat == 1):
@@ -86,6 +88,12 @@ def main(argv1,argv2):
             with open('2017_PTS.csv') as f:
                 ptsmax = float(f.readline().split(',')[-1])
                 f.close()
+
+    filelen = max(trblen,astlen,blklen,ptslen,stllen)
+
+    #extreme if more than existing players get asked
+    if(k>filelen):
+        k = filelen
 
     growing = True
     Wk = []
@@ -189,8 +197,6 @@ def main(argv1,argv2):
             for player in T_Array:
                 T += player[3]
 
-        # print T_Array,T
-
         if(growing == True):
 
             lowerbounds = sortedArray(playersArray,3)
@@ -217,6 +223,7 @@ def main(argv1,argv2):
                         player.append(player_upper_bound)  # save upper bound
                 firsttime=1
 
+
             elif(firsttime==1):
                 for player in playersArray:
                     player_upper_bound = 0
@@ -238,44 +245,50 @@ def main(argv1,argv2):
             W = []
 
             ub = upperbounds[0][-1]
+
             #extreme pruning play
+            
             for player in lowerbounds:
                 if(player[3]>=ub):
                     W.append(player)
                     upperbounds.remove(player)
                     upperbounds = sortedArray(upperbounds,4)
+                    if(len(W)>=k):
+                        print "-----------------"
+                        print "TOP-K"
+                        for w in W[0:k]:
+                            print w
+                        print "lines parsed: " + temptoken[1].__str__()
+                        print "-----------------"
+                        exit(0)
                     ub = upperbounds[0][-1]
 
             if(len(W)>=k):
-
+                print "-----------------"
                 print "TOP-K"
                 for w in W[0:k]:
                     print w
-                print temptoken[1]
+                print "lines parsed: " + temptoken[1].__str__()
+                print "-----------------"
                 exit(0)
 
+            seenAll = 0
+            for player in playersArray:
+                if(len(player[2])==len(statsarray)):
+                    seenAll+=1
+            if(seenAll >= len(playersArray)):
+                print "-----------------"
+                print "TOP-K"
+                for w in W[0:k]:
+                    print w
+                print "lines parsed: " + temptoken[1].__str__()
+                print "-----------------"
+                exit(0)
             t = lowerbounds[k-1][3]
-            print t
 
-            # extreme pruning play
-
-            for w in lowerbounds:
-                print w
-
-            print ub
-            print len(W)
-            print len(lowerbounds)
-            print len(playersArray)
-
+            #extreme pruning play
 
             prevTarray = T_Array
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":

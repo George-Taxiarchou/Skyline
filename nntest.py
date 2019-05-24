@@ -60,7 +60,7 @@ def main():
     playermatrix = sortedArray(playermatrix)
     playermatrix = playermatrix[::-1]
 
-    for i in range(0,11):
+    for i in range(0,570):
         print playermatrix[i]
 
 if __name__ == "__main__":
