@@ -24,7 +24,7 @@ def sortedArray(array,i):
     array = array[::-1]
     return array
 
-def appendedPlayersArray(player,playersArray):
+def appendedPlayersArray(player,playersArray,growing):
     FILE = 2
     ID = 0
 
@@ -35,11 +35,12 @@ def appendedPlayersArray(player,playersArray):
         for p in playersArray:
             if(player[ID][ID] == p[ID][ID]):
                 p[FILE]+=player[FILE]
-                p[-1]+=player[-1]
+                p[3]+=player[3]
                 found = True
-        if(not found): # if not found add player
+        if(not found and growing == True): # if not found add player
             playersArray.append(player)
     return playersArray
+
 
 
 def main(argv1,argv2):
@@ -47,141 +48,140 @@ def main(argv1,argv2):
     statsarray = [int(stat) for stat in statsarray]
     k = int(argv2)
     trbparser = astparser = stlparser = blkparser = ptsparser= None
-
+    trbmax = blkmax = astmax = stlmax = ptsmax = 0
+    playersArray = []
     for stat in statsarray:
         if(stat == 1):
             trbfile = open("2017_TRB.csv","r")
             trbparser = scan(trbfile)
             trblen = file_len("2017_TRB.csv")
+            with open('2017_TRB.csv') as f:
+                trbmax = float(f.readline().split(',')[-1])
+                f.close()
         elif(stat == 2):
             astfile = open("2017_AST.csv","r")
             astparser = scan(astfile)
             astlen = file_len("2017_AST.csv")
+            with open('2017_AST.csv') as f:
+                astmax = float(f.readline().split(',')[-1])
+                f.close()
         elif(stat == 3):
             stlfile = open("2017_STL.csv","r")
             stlparser = scan(stlfile)
             stllen = file_len("2017_STL.csv")
+            with open('2017_STL.csv') as f:
+                stlmax = float(f.readline().split(',')[-1])
+                f.close()
         elif(stat ==4):
             blkfile = open("2017_BLK.csv","r")
             blkparser = scan(blkfile)
             blklen = file_len("2017_BLK.csv")
+            with open('2017_BLK.csv') as f:
+                blkmax = float(f.readline().split(',')[-1])
+                f.close()
         elif(stat == 5):
             ptsfile = open("2017_PTS.csv","r")
             ptsparser = scan(ptsfile)
             ptslen = file_len("2017_PTS.csv")
+            with open('2017_PTS.csv') as f:
+                ptsmax = float(f.readline().split(',')[-1])
+                f.close()
 
-    trbend = blkend = astend = stlend = ptsend = 0
-    trbmax = blkmax = astmax = stlmax = ptsmax = 0
-    firstparse = 0
-    playersArray = []
+    growing = True
     Wk = []
-    t = -1
-    T = 0
+    firsttime=0
+    prevTarray = []
 
-    #growing phase
     while True:
-
-        # if(trbend+blkend+astend+stlend+ptsend == len(statsarray)):
-        #     print "end of file"
-        #     break
+        T_Array  = []
         trbflag = astflag = stlflag = blkflag = ptsflag = 0
-
-        T_Array = []
-
         if(trbparser!=None and trbflag == 0):
             trbflag = 1
             token = next(trbparser)
-            if(firstparse == 0):
-                trbmax = token[0][1]
             if(token[1] == trblen):
                 trbend = 1
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
-                # print temptoken
+                temptoken[0].pop(-1)
             else:
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
-                # print temptoken
-
-            playersArray = appendedPlayersArray(temptoken,playersArray)
+                temptoken[0].pop(-1)
+            playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(astparser!=None and astflag==0):
             astflag = 1
             token = next(astparser)
-            if(firstparse == 0):
-                astmax = token[0][1]
             if(token[1] == astlen):
                 astend = 1
                 temptoken = token
                 temptoken.append(['ast'])
                 temptoken.append(calculateScore(token[0][1],astmax))
-                # print temptoken
+                temptoken[0].pop(-1)
             else:
                 temptoken = token
                 temptoken.append(['ast'])
                 temptoken.append(calculateScore(token[0][1],astmax))
-                # print temptoken
-            playersArray.append(temptoken)
+                temptoken[0].pop(-1)
+            playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(stlparser!=None and stlflag == 0):
             stlflag = 1
             token = next(stlparser)
-            if(firstparse == 0):
-                stlmax =  token[0][1]
+
             if(token[1] == stllen):
                 stlend = 1
                 temptoken = token
                 temptoken.append(['stl'])
                 temptoken.append(calculateScore(token[0][1],stlmax))
-                # print temptoken
+                temptoken[0].pop(-1)
             else:
                 temptoken = token
                 temptoken.append(['stl'])
                 temptoken.append(calculateScore(token[0][1],stlmax))
-                # print temptoken
-            playersArray.append(temptoken)
+                temptoken[0].pop(-1)
+            playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(blkparser!=None and blkflag==0):
             blkflag = 1
             token = next(blkparser)
-            if(firstparse == 0):
-                blkmax =  token[0][1]
+
             if(token[1] == blklen):
                 blkend = 1
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
-                # print temptoken
+                temptoken[0].pop(-1)
             else:
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
-                # print temptoken
-            playersArray = appendedPlayersArray(temptoken,playersArray)
+                temptoken[0].pop(-1)
+
+            playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(ptsparser!=None and ptsflag==0):
             ptsflag = 1
             token = next(ptsparser)
-            if(firstparse == 0):
-                ptsmax =  token[0][1]
             if(token[1] == ptslen):
                 ptsend = 1
                 temptoken = token
                 temptoken.append(['pts'])
                 temptoken.append(calculateScore(token[0][1],ptsmax))
-                # print temptoken
+                temptoken[0].pop(-1)
             else:
                 temptoken = token
                 temptoken.append(['pts'])
                 temptoken.append(calculateScore(token[0][1],ptsmax))
-                # print temptoken
-            playersArray.append(temptoken)
+                temptoken[0].pop(-1)
+
+            playersArray = appendedPlayersArray(temptoken,playersArray,growing)
             T_Array.append(temptoken)
 
         if(trbflag+blkflag+astflag+stlflag+ptsflag == len(statsarray)):
@@ -189,159 +189,92 @@ def main(argv1,argv2):
             for player in T_Array:
                 T += player[3]
 
-        Wk = sortedArray(playersArray,3)
+        # print T_Array,T
 
-        t = Wk[ min(k,len(Wk))-1 ][3]
+        if(growing == True):
 
-        if(len(Wk)==trblen):
-            break
+            lowerbounds = sortedArray(playersArray,3)
 
-        firstparse = 1
+            t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
 
-        if( t >= T):
-            print "W K"
-            for item in Wk:
-                print item
-            print len(Wk)
-            # exit(0)
-            break
+            if(t>=T):
+                growing = False
+                Wk = lowerbounds[0:k]
+            prevTarray = T_Array
 
-    #shrinking phase
-    prevTarray = T_Array
-
-    for player in Wk:
-        player_upper_bound = 0
-
-        if( len(player[2])==len(statsarray) ): # if found on every line
-            player_upper_bound = player[-1]    # upper bound is lower bound
-            player.append(player_upper_bound)  # save upper bound
         else:
-            for newPlayer in T_Array:
-                if newPlayer[2][0] not in player[2]:
-                    player_upper_bound += newPlayer[-1]
-            player_upper_bound += player[-1]    # upper bound is lower bound
-            player.append(player_upper_bound)  # save upper bound
+            if(firsttime==0):
+                for player in playersArray:
+                    player_upper_bound = 0
+                    if( len(player[2])==len(statsarray) ): # if found on every line
+                        player_upper_bound = player[3]    # upper bound is lower bound
+                        player.append(player_upper_bound)  # save upper bound
+                    else:
+                        for newPlayer in T_Array:
+                            if newPlayer[2][0] not in player[2]:
+                                player_upper_bound += newPlayer[3]
+                        player_upper_bound += player[3]    # upper bound is lower bound
+                        player.append(player_upper_bound)  # save upper bound
+                firsttime=1
 
-    # for item in Wk:
-    #     if(t>item[-1] and Wk.index(item)>=k):
-    #         Wk.remove(item)
-
-    if(len(Wk) != trblen):
-        upperboundsarray = sortedArray(Wk,3)
-        for i in range(0,k):
-            upperboundsarray.pop(0)
-        upperboundsarray = sortedArray(upperboundsarray,4)
-        fcub = upperboundsarray[0][-1]
-    else:
-        fcub = -1
-
-    while(t<fcub and fcub!=-1):
-        T_Array = []
-        trbflag = blkflag =0
-
-        if trbparser!=None and trbflag == 0 :
-            token = next(trbparser)
-            if(firstparse == 0):
-                trbmax = token[0][1]
-            if(token[1] == trblen):
-                trbend = 1
-                temptoken = token
-                temptoken.append(['trb'])
-                temptoken.append(calculateScore(token[0][1],trbmax))
-                # print temptoken
-            else:
-                temptoken = token
-                temptoken.append(['trb'])
-                temptoken.append(calculateScore(token[0][1],trbmax))
-                # print temptoken
-
-            #playersArray = appendedPlayersArray(temptoken,playersArray)
-            T_Array.append(temptoken)
-
-        if blkparser!=None and blkflag==0:
-            token = next(blkparser)
-            if(firstparse == 0):
-                blkmax =  token[0][1]
-            if(token[1] == blklen):
-                blkend = 1
-                temptoken = token
-                temptoken.append(['blk'])
-                temptoken.append(calculateScore(token[0][1],blkmax))
-                # print temptoken
-            else:
-                temptoken = token
-                temptoken.append(['blk'])
-                temptoken.append(calculateScore(token[0][1],blkmax))
-                # print temptoken
-            #playersArray = appendedPlayersArray(temptoken,playersArray)
-            T_Array.append(temptoken)
-
-        for newplayer in T_Array:
-            for player in Wk:
-                if(newplayer[0][0]==player[0][0]):
-                    player[3]+=newplayer[3]
-                    player[2].append(newPlayer[2][0])
-
-        for newPlayer in T_Array:
-            for player in Wk:
-                if newPlayer[2][0] not in player[2]:
-                    idx = T_Array.index(newPlayer)
-                    player[4] -= prevTarray[idx][3] - newPlayer[3] #calc new upper
+            elif(firsttime==1):
+                for player in playersArray:
+                    player_upper_bound = 0
+                    if(len(player[2])==len(statsarray) ): # if found on every line
+                        player_upper_bound = player[3]    # upper bound is lower bound
+                        player[4]=player_upper_bound  # save upper bound
+                    else:
+                        for newPlayer in T_Array:
+                            if newPlayer[2][0] not in player[2]:
+                                player_upper_bound += newPlayer[3]
+                        player_upper_bound += player[3]    # upper bound is lower bound
+                        player[4]=player_upper_bound # save upper bound
 
 
-        prevTarray = T_Array
-        Wk = sortedArray(Wk,3)
-        prevt = t
-        t = Wk[k-1][3] #calc t
 
-        upperboundsarray = sortedArray(Wk,3)
-        for i in range(0,k):
-            upperboundsarray.pop(0)
-        upperboundsarray = sortedArray(upperboundsarray,4)
-        fcub = upperboundsarray[0][-1]
+            lowerbounds = sortedArray(playersArray,3)
+            upperbounds = sortedArray(playersArray,4)
 
-        print len(Wk)
+            W = []
 
-        for item in Wk:
-            if(t>item[-1] and Wk.index(item)>=k):
-                Wk.remove(item)
+            ub = upperbounds[0][-1]
+            #extreme pruning play
+            for player in lowerbounds:
+                if(player[3]>=ub):
+                    W.append(player)
+                    upperbounds.remove(player)
+                    upperbounds = sortedArray(upperbounds,4)
+                    ub = upperbounds[0][-1]
 
-        # for item in Wk:
-        #     for kek in Wk:
-        #         if(item[3]<kek[-1]):
+            if(len(W)>=k):
 
-                    # seenAll=0
-                    # for player in Wk:
-                    #     if(len(player[2])==len(statsarray)):
-                    #         seenAll+=1
-                    # if(seenAll >= len(Wk)):
-                    #     for player in Wk:
-                    #         print Wk[i]
-                    #     exit(0)
+                print "TOP-K"
+                for w in W[0:k]:
+                    print w
+                print temptoken[1]
+                exit(0)
+
+            t = lowerbounds[k-1][3]
+            print t
+
+            # extreme pruning play
+
+            for w in lowerbounds:
+                print w
+
+            print ub
+            print len(W)
+            print len(lowerbounds)
+            print len(playersArray)
 
 
-        print len(Wk)
-        seenAll = 0
-        for player in Wk:
-            if(len(player[2])==len(statsarray)):
-                seenAll+=1
-        if(seenAll >= len(Wk)-1):
-            break
-        print Wk[-1]
-        if(len(Wk)==k):
-            break
-
-        if(t>=fcub):
-            break
+            prevTarray = T_Array
 
 
 
 
-    print fcub,t
-    print "###############"
-    for i in range(0,k):
-        print(Wk[i])
-    print temptoken[1]
+
+
 
 
 

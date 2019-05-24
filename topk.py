@@ -206,10 +206,12 @@ def main(argv1,argv2):
             # exit(0)
             break
 
-    #endwhile
+    #shrinking phase
+    prevTarray = T_Array
 
     for player in Wk:
         player_upper_bound = 0
+
         if( len(player[2])==len(statsarray) ): # if found on every line
             player_upper_bound = player[-1]    # upper bound is lower bound
             player.append(player_upper_bound)  # save upper bound
@@ -220,20 +222,24 @@ def main(argv1,argv2):
             player_upper_bound += player[-1]    # upper bound is lower bound
             player.append(player_upper_bound)  # save upper bound
 
+    # for item in Wk:
+    #     if(t>item[-1] and Wk.index(item)>=k):
+    #         Wk.remove(item)
 
-    prevTarray = T_Array
-    upperboundsarray = sortedArray(Wk,3)
-    for i in range(0,k):
-        upperboundsarray.pop(0)
-    upperboundsarray = sortedArray(upperboundsarray,4)
-    fcub = upperboundsarray[0][-1]
-#shrinking phase
-    while(t>=T and t<fcub):
+    if(len(Wk) != trblen):
+        upperboundsarray = sortedArray(Wk,3)
+        for i in range(0,k):
+            upperboundsarray.pop(0)
+        upperboundsarray = sortedArray(upperboundsarray,4)
+        fcub = upperboundsarray[0][-1]
+    else:
+        fcub = -1
+    RETURNED = []
+    while(t<fcub and fcub!=-1):
         T_Array = []
         trbflag = blkflag =0
-#----------------------------PARSER----------------------------
+
         if trbparser!=None and trbflag == 0 :
-            trbflag = 1
             token = next(trbparser)
             if(firstparse == 0):
                 trbmax = token[0][1]
@@ -242,13 +248,17 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['trb'])
                 temptoken.append(calculateScore(token[0][1],trbmax))
+                # print temptoken
+
+            #playersArray = appendedPlayersArray(temptoken,playersArray)
             T_Array.append(temptoken)
+
         if blkparser!=None and blkflag==0:
-            blkflag = 1
             token = next(blkparser)
             if(firstparse == 0):
                 blkmax =  token[0][1]
@@ -257,64 +267,83 @@ def main(argv1,argv2):
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
+                # print temptoken
             else:
                 temptoken = token
                 temptoken.append(['blk'])
                 temptoken.append(calculateScore(token[0][1],blkmax))
+                # print temptoken
+            #playersArray = appendedPlayersArray(temptoken,playersArray)
             T_Array.append(temptoken)
-#----------------------------PARSER----------------------------
-        if(trbflag+blkflag+astflag+stlflag+ptsflag == len(statsarray)):
-            T = 0
-            for player in T_Array:
-                T += player[3]
-                
-            #calc new lower bounds
+
         for newplayer in T_Array:
             for player in Wk:
                 if(newplayer[0][0]==player[0][0]):
                     player[3]+=newplayer[3]
                     player[2].append(newPlayer[2][0])
-            #calc new upper bounds
+
         for newPlayer in T_Array:
             for player in Wk:
                 if newPlayer[2][0] not in player[2]:
                     idx = T_Array.index(newPlayer)
-                    player[4] -= prevTarray[idx][3] - newPlayer[3]
+                    player[4] -= prevTarray[idx][3] - newPlayer[3] #calc new upper
 
-            #recalculations
 
         prevTarray = T_Array
-        Wk = sortedArray(playersArray,3)
-        newWk = Wk[0:k]
-        print len(Wk)
+        Wk = sortedArray(Wk,3)
+        prevt = t
+        t = Wk[k-1][3] #calc t
 
-        # for kappa in prevWk:
-        #     if(kappa not in newWk):
-        #         Wk.remove(kappa)
-
-        t = Wk[k-1][3]
-            #-----------------
         upperboundsarray = sortedArray(Wk,3)
         for i in range(0,k):
             upperboundsarray.pop(0)
         upperboundsarray = sortedArray(upperboundsarray,4)
         fcub = upperboundsarray[0][-1]
-        #-----------------break conditions-----------------#
-        if(t>=fcub):
-            break
 
+        print len(Wk)
+
+        for item in Wk:
+            if(t>item[-1] and Wk.index(item)>=k):
+                Wk.remove(item)
+
+        # for item in Wk:
+        #     for kek in Wk:
+        #         if(item[3]<kek[-1]):
+
+                    # seenAll=0
+                    # for player in Wk:
+                    #     if(len(player[2])==len(statsarray)):
+                    #         seenAll+=1
+                    # if(seenAll >= len(Wk)):
+                    #     for player in Wk:
+                    #         print Wk[i]
+                    #     exit(0)
+
+
+        print len(Wk)
         seenAll = 0
         for player in Wk:
             if(len(player[2])==len(statsarray)):
                 seenAll+=1
-        if(seenAll >= len(Wk)-1):
+        if(seenAll >= len(Wk)):
             break
-        #-----------------break conditions-----------------#
-    #endwhile
-    print "----------"
-    for w in Wk[0:k]:
-        print w
+        print Wk[-1]
+        if(len(Wk)==k):
+            break
+
+        if(t>=fcub):
+            break
+
+
+
+
+    print fcub,t
+    print "###############"
+    for i in range(0,k):
+        print(Wk[i])
     print temptoken[1]
+
+
 
 if __name__ == "__main__":
     main(sys.argv[1],sys.argv[2])
