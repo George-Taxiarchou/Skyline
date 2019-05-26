@@ -191,6 +191,7 @@ def main(argv1,argv2):
             prevTarray = T_Array
 
         else:
+
             for player in playersArray:
                 player_upper_bound = 0
                 if( len(player[2])==len(statsarray) ): # if found on every file
@@ -217,7 +218,7 @@ def main(argv1,argv2):
 
             ub = upperbounds[0][-1]
 
-            #extreme pruning play
+            # pruning
             prevub = ub
             for player in lowerbounds:
                 if(player[3]>=ub):
@@ -239,9 +240,10 @@ def main(argv1,argv2):
                         prevub = ub
 
             t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
-            #extreme pruning play
+            # pruning
 
             prevTarray = T_Array
+
 
 if __name__ == "__main__":
     main(sys.argv[1],sys.argv[2])

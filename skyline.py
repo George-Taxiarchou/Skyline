@@ -17,24 +17,24 @@ def file_len(fname):
             pass
     return i + 1
 
-def dominationarray(playermatrix,i,stats):
+def dominationarray(player,stats):
     scorearray = []
     for stat in stats:
         stat+=2
         if(stat==3):
-            trb = playermatrix[i][3]
+            trb = player[3]
             scorearray.append(trb)
         elif(stat==4):
-            ast = playermatrix[i][4]
+            ast = player[4]
             scorearray.append(ast)
         elif(stat==5):
-            stl = playermatrix[i][5]
+            stl = player[5]
             scorearray.append(stl)
         elif(stat==6):
-            blk = playermatrix[i][6]
+            blk = player[6]
             scorearray.append(blk)
         elif(stat==7):
-            pts = playermatrix[i][7]
+            pts = player[7]
             scorearray.append(pts)
     return scorearray
 
@@ -69,41 +69,36 @@ def main(argv1):
     W = []
     T = []
 
-    for i in range(length+1):
-        player = next(parser)
-        o.append(player)
-    o.pop(0)
-
-    for i in range(0,len(o)):
-        o[i].append(dominationarray(o,i,statsarray))
+    player = next(parser)
 
     i=0
     while(i<length):
+
+        player = next(parser)
+        player.append(dominationarray(player,statsarray))
+
         if(i==0):
-            W.append(o[i])
+            W.append(player)
 
         flag = 0
-        domiflag=0
+
         for object in W:
-            if(dominates(object,o[i])):
+            if(dominates(object,player)):
                 for obj in W:
-                    if(obj==o[i]):
+                    if(obj==player):
                         W.remove(obj)
                 break
             else:
                 for object in W:
-                    if(dominates(o[i],object)):
+                    if(dominates(player,object)):
                         W.remove(object)
                 if(flag!=1):
-                    W.append(o[i])
+                    W.append(player)
                     flag = 1
         i+=1
 
-
     for skylinePlayer in W:
         print skylinePlayer
-
-
 
 if __name__ == "__main__":
     main(sys.argv[1])
