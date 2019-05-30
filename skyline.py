@@ -1,5 +1,5 @@
 import sys
-
+#AM:2552 , Name: Taxiarchou Georgios-Panagiotis
 def scan(file):
     firsttime=0
     while True:

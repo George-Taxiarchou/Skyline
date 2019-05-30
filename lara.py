@@ -1,5 +1,5 @@
 import sys
-
+#AM:2552 , Name: Taxiarchou Georgios-Panagiotis
 def scan(file):
     linesparsed=0
     while True:
@@ -185,10 +185,11 @@ def main(argv1,argv2):
                     print "\t  lines parsed: " + temptoken[1].__str__()
                     exit(0)
 
-            if(t>=T and len(statsarray)!=1):
+            if(t>=T and len(statsarray)!=1 and len(lowerbounds)>=k):
                 growing = False
                 Wk = lowerbounds[0:k]
             prevTarray = T_Array
+            print lowerbounds
 
         else:
 
@@ -238,6 +239,8 @@ def main(argv1,argv2):
                     if(upperbounds!=[]):
                         ub = upperbounds[0][-1]
                         prevub = ub
+
+
 
             t = lowerbounds[min(k-1,len(lowerbounds)-1)][3]
             # pruning
