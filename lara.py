@@ -189,7 +189,6 @@ def main(argv1,argv2):
                 growing = False
                 Wk = lowerbounds[0:k]
             prevTarray = T_Array
-            print lowerbounds
 
         else:
 
